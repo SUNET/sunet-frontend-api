@@ -51,7 +51,8 @@ def init_app(name, config=None):
     app.config.from_envvar('SUNETFRONTEND_SETTINGS', silent=True)
 
     # Load optional init time settings
-    app.config.update(config)
+    if config is not None:
+        app.config.update(config)
 
     # Register views. Import here to avoid a Flask circular dependency.
     from sunetfrontend.views import sunetfrontend_views
