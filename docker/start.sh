@@ -10,7 +10,7 @@ base_dir=${base_dir-"/opt/eduid"}
 project_dir=${project_dir-"${base_dir}/${sunetfrontend_name}"}
 app_dir=${app_dir-"${project_dir}/${app_name}"}
 # These *can* be set from Puppet, but are less expected to...
-log_dir=${log_dir-'/var/log/dockers'}
+log_dir=${log_dir-'/var/log/sunetfrontend-api'}
 state_dir=${state_dir-"${base_dir}/run"}
 workers=${workers-1}
 worker_class=${worker_class-sync}
