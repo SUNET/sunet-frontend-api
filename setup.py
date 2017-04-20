@@ -32,7 +32,7 @@ testing_extras = test_requires + [
 
 
 setup(
-    name='sunetfrontend_api',
+    name='sunetfrontend',
     version=version,
     description='SUNET frontend API',
     long_description=README + '\n\n' + CHANGES,
