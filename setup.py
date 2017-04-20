@@ -44,7 +44,7 @@ setup(
     author='SUNET',
     url='https://github.com/SUNET/sunet-frontend-api',
     license='BSD',
-    packages=['sunetfrontend',],
+    packages=find_packages('src'),
     package_dir = {'': 'src'},
     include_package_data=True,
     zip_safe=False,
