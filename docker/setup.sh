@@ -18,4 +18,6 @@ echo "#############################################################"
 echo "$0: Using PyPi URL ${PYPI}"
 echo "#############################################################"
 
+/opt/eduid/bin/pip install -i ${PYPI} gunicorn
+
 /opt/eduid/bin/pip freeze
