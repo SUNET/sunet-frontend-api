@@ -25,12 +25,16 @@ def register(backend):
         server=www-fre-1
         port=2443
 
-      results in haproxy config
+      results in a file containing
 
-        backend www.dev.eduid.se
-          server www-fre-1 <remote_ip>:2443 ssl check verify none
+        ACTION=register
+        BACKEND=www.dev.eduid.se
+        SERVER=www-fre-1
+        REMOTE_IP=<remote IP address>
+        PORT=2443
 
-    TODO: We should really NOT do 'verify none' here, but this is a PoC.
+    This file is then found and processed by something else that generates
+    actual load balancer config.
     """
     remote_ip = _get_remote_ip()
     server = ''
@@ -49,13 +53,11 @@ def register(backend):
 
     current_app.logger.info('Register backend {}, server {}, port {}'.format(backend, server, port))
 
-    server_fn = _get_server_filename(backend, server, remote_ip)
-    current_app.logger.debug('Writing file {}'.format(server_fn))
-    with open(server_fn, 'w') as fd:
-        fd.write('  server {} {}:{} ssl check verify none\n'.format(server, remote_ip, port))
+    write_file('register', backend, server, remote_ip, port)
 
     current_app.logger.debug('Returning success')
     return jsonify({'success': True})
+
 
 @sunetfrontend_views.route('/unregister/<backend>', methods=['POST'])
 def unregister(backend):
@@ -75,6 +77,7 @@ def unregister(backend):
     port = 0
     try:
         server = request.form['server']
+        port = int(request.form.get('port', 443))
     except:
         current_app.logger.info('Bad server POST parameter')
         abort(400)
@@ -86,13 +89,8 @@ def unregister(backend):
 
     current_app.logger.info('Unegister backend {}, server {}'.format(backend, server))
 
-    server_fn = _get_server_filename(backend, server, remote_ip)
-    if os.path.isfile(server_fn):
-        current_app.logger.debug('Removing file {}'.format(server_fn))
-        os.unlink(server_fn)
-
-    current_app.logger.debug('Returning success')
-    return jsonify({'success': True})
+    # Signal explicit un-registration so that route can be withdrawn
+    write_file('unregister', backend, server, remote_ip, port)
 
 
 @sunetfrontend_views.route('/ping', methods=['GET', 'POST'])
@@ -103,6 +101,17 @@ def ping():
 def is_allowed_register(backend, server, remote_ip):
     # TODO: implement this
     return True
+
+
+def write_file(action, backend, server, remote_ip, port):
+    server_fn = _get_server_filename(backend, server, remote_ip)
+    current_app.logger.debug('Writing file {}'.format(server_fn))
+    with open(server_fn, 'w') as fd:
+        fd.write('ACTION={}\nBACKEND={}\nSERVER={}\nREMOTE_IP={}\nPORT={}\n'.format(
+            action, backend, server, remote_ip, port))
+
+    current_app.logger.debug('Returning success')
+    return jsonify({'success': True})
 
 
 def _get_remote_ip():
