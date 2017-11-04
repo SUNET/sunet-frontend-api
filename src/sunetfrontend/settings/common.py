@@ -1,2 +1,2 @@
-DEBUG = True
+DEBUG = False
 BACKEND_DIR = '/backends'
