@@ -83,11 +83,11 @@ def unregister(backend):
         abort(400)
 
     if not is_allowed_register(backend, server, remote_ip):
-        current_app.logger.info('Unegister for backend {} by server {} NOT ALLOWED'.format(
+        current_app.logger.info('Unregister for backend {} by server {} NOT ALLOWED'.format(
             backend, server))
         abort(403)
 
-    current_app.logger.info('Unegister backend {}, server {}'.format(backend, server))
+    current_app.logger.info('Unregister backend {}, server {}'.format(backend, server))
 
     # Signal explicit un-registration so that route can be withdrawn
     write_file('unregister', backend, server, remote_ip, port)
