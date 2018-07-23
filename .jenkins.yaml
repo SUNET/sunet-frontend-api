@@ -1,7 +1,8 @@
 builders:
   - python
 python_module: sunetfrontend
-publish_over_ssh: pypi.sunet.se
+publish_over_ssh:
+  - pypi.sunet.se
 clean_workspace: true
 
 extra_jobs:
