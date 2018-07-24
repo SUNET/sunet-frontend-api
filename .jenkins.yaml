@@ -10,6 +10,7 @@ extra_jobs:
     builders:
       - docker
     docker_name: sunetfrontend-api
+    docker_context_dir: docker
     managed_scripts:
       - docker_build_prep.sh
       - docker_tag.sh
