@@ -1,19 +1,34 @@
 builders:
-  - python
+  - script
+triggers:
+  cron: "@weekly"
+slack:
+  room: "eduid-builds"
 python_module: sunetfrontend
+clean_workspace: true
 publish_over_ssh:
   - pypi.sunet.se
-clean_workspace: true
+
+script:
+  - "python3.7 -m venv venv"
+  - ". venv/bin/activate"
+  - "pip install --upgrade setuptools pip wheel mypy"
+  - "pip install --index-url https://pypi.sunet.se -r test_requirements.txt"
+  - "make test"
+  - "make typecheck"
+  - "python setup.py sdist bdist_wheel --universal"
 
 extra_jobs:
   - name: sunet-frontend-api-docker
     builders:
       - docker
     docker_name: sunetfrontend-api
-    docker_context_dir: docker
     managed_scripts:
       - docker_build_prep.sh
       - docker_tag.sh
+    triggers:
+      github_push: false
+      cron: null
     upstream:
-      - eduid-docker-pythonenv
+      - eduid-docker-python3env
       - sunet-frontend-api
