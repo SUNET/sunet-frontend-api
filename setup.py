@@ -1,41 +1,41 @@
-from setuptools import setup, find_packages
 import os
+from pathlib import PurePath
+from typing import List
+
+from setuptools import find_packages, setup
 
 
-here = os.path.abspath(os.path.dirname(__file__))
-README = 'SUNET frontend API'
-CHANGES = ''
+def load_requirements(path: PurePath) -> List[str]:
+    """ Load dependencies from a requirements.txt style file, ignoring comments etc. """
+    res = []
+    with open(path) as fd:
+        for line in fd.readlines():
+            while line.endswith('\n') or line.endswith('\\'):
+                line = line[:-1]
+            line = line.strip()
+            if not line or line.startswith('-') or line.startswith('#'):
+                continue
+            res += [line]
+    return res
+
+version = '0.0.3'
+
+here = PurePath(__file__)
+
+install_requires = load_requirements(here.with_name('requirements.txt'))
+test_requires = load_requirements(here.with_name('test_requirements.txt'))
+
+README = 'SUNET haproxy status'
 try:
     README = open(os.path.join(here, 'README.rst')).read()
 except IOError:
     pass
-try:
-    CHANGES = open(os.path.join(here, 'CHANGES.rst')).read()
-except IOError:
-    pass
-
-version = '0.0.3'
-
-requires = [
-    'flask',
-    'simplejson >= 3.6.5',
-]
-
-
-test_requires = [
-]
-
-testing_extras = test_requires + [
-    'nose==1.2.1',
-    'coverage==3.6',
-]
-
 
 setup(
     name='sunetfrontend',
     version=version,
     description='SUNET frontend API',
-    long_description=README + '\n\n' + CHANGES,
+    long_description=README,
     # TODO: add classifiers
     classifiers=[
         # Get strings from http://pypi.python.org/pypi?%3Aaction=list_classifiers
@@ -48,10 +48,9 @@ setup(
     package_dir = {'': 'src'},
     include_package_data=True,
     zip_safe=False,
-    install_requires=requires,
-    tests_require=test_requires,
+    install_requires=install_requires,
     extras_require={
-        'testing': testing_extras,
+        'testing': test_requires,
     },
     test_suite='sunetfrontend',
     entry_points={

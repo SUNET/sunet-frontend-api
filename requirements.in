@@ -1,0 +1,3 @@
+flask
+simplejson
+importlib-metadata  # sub-requirement of flask
