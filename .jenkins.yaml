@@ -1,0 +1,19 @@
+builders:
+  - python
+python_module: sunetfrontend
+publish_over_ssh:
+  - pypi.sunet.se
+clean_workspace: true
+
+extra_jobs:
+  - name: sunet-frontend-api-docker
+    builders:
+      - docker
+    docker_name: sunetfrontend-api
+    docker_context_dir: docker
+    managed_scripts:
+      - docker_build_prep.sh
+      - docker_tag.sh
+    upstream:
+      - eduid-docker-pythonenv
+      - sunet-frontend-api
