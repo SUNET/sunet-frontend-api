@@ -6,7 +6,7 @@ import sunetfrontend
 import logging
 
 from flask import Flask, request, has_request_context
-from werkzeug.contrib.fixers import ProxyFix
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 
 __author__ = 'ft'
