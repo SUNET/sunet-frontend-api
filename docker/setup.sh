@@ -21,3 +21,5 @@ echo "#############################################################"
 /opt/eduid/bin/pip install -i ${PYPI} gunicorn
 
 /opt/eduid/bin/pip freeze
+
+rm -rf /.cache
