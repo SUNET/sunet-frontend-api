@@ -6,7 +6,7 @@ set -x
 # These could be set from Puppet if multiple instances are deployed
 sunetfrontend_name=${sunetfrontend_name-'sunetfrontend-api'}
 app_name=${app_name-'api'}
-base_dir=${base_dir-"/opt/frontend"}
+base_dir=${base_dir-"/opt/eduid"}
 project_dir=${project_dir-"${base_dir}/${sunetfrontend_name}"}
 app_dir=${app_dir-"${project_dir}/${app_name}"}
 # These *can* be set from Puppet, but are less expected to...
