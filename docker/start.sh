@@ -6,7 +6,7 @@ set -x
 # These could be set from Puppet if multiple instances are deployed
 sunetfrontend_name=${sunetfrontend_name-'sunetfrontend-api'}
 app_name=${app_name-'api'}
-base_dir=${base_dir-"/opt/eduid"}
+base_dir=${base_dir-"/opt/frontend"}
 project_dir=${project_dir-"${base_dir}/${sunetfrontend_name}"}
 app_dir=${app_dir-"${project_dir}/${app_name}"}
 # These *can* be set from Puppet, but are less expected to...
@@ -36,7 +36,12 @@ fi
 # version of something is actually running.
 pip freeze
 
-exec start-stop-daemon --start -c "${runas_user}:${runas_group}" --exec \
+runas=''
+if [ "x`whoami`" = "xroot" ]; then
+    runas="-c \"${runas_user}:${runas_group}\""
+fi
+
+exec start-stop-daemon --start $runas --exec \
      "${base_dir}"/bin/gunicorn \
      --pidfile "${state_dir}/${sunetfrontend_name}.pid" \
      -- \
