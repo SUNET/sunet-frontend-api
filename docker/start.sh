@@ -37,7 +37,7 @@ fi
 pip freeze
 
 runas=''
-if [ "x`whoami`" = "xroot" ]; then
+if [ "x`id -u`" = "x0" ]; then
     runas="-c \"${runas_user}:${runas_group}\""
 fi
 
