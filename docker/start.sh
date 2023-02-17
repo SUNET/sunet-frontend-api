@@ -17,6 +17,7 @@ worker_threads=${worker_threads-1}
 worker_timeout=${worker_timeout-30}
 runas_user=${runas_user-'sunetfrontend'}
 runas_group=${runas_group-'sunetfrontend'}
+log_level=${loglevel-'info'}
 
 chown -R "${runas_user}:${runas_group}" "${state_dir}" || true
 test -d /backends && chown -R "${runas_user}:${runas_group}" /backends || true
@@ -41,6 +42,9 @@ if [ "x`id -u`" = "x0" ]; then
     runas="-c ${runas_user}:${runas_group}"
 fi
 
+# Make sure we don't buffer output from gunicorn
+export PYTHONUNBUFFERED=1
+
 exec start-stop-daemon --start $runas --exec \
      "${base_dir}"/bin/gunicorn \
      --pidfile "${state_dir}/${sunetfrontend_name}.pid" \
@@ -48,5 +52,7 @@ exec start-stop-daemon --start $runas --exec \
      --bind 0.0.0.0:8080 \
      --workers "${workers}" --worker-class "${worker_class}" \
      --threads "${worker_threads}" --timeout "${worker_timeout}" \
+     --log-level "${log_level}" \
      --capture-output \
+     --enable-stdio-inheritance \
      ${extra_args} sunetfrontend.run:app

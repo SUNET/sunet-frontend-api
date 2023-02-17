@@ -4,6 +4,7 @@ from __future__ import absolute_import
 
 import sunetfrontend
 import logging
+from logging.config import dictConfig
 
 from flask import Flask, request, has_request_context
 from werkzeug.middleware.proxy_fix import ProxyFix
@@ -62,8 +63,23 @@ def init_app(name, config=None):
 
     # set up logging
     custom_format = '%(asctime)s %(remote_addr)s - %(levelname)s %(name)s "%(path)s" "%(endpoint)s" ; %(message)s'
-    for handler in app.logger.handlers:
-        handler.setFormatter(CustomFormatter(fmt = custom_format))
+
+    dictConfig({
+        'version': 1,
+        'formatters': {'default': {
+                "()": CustomFormatter,
+                "fmt": custom_format,
+        }},
+        'handlers': {'wsgi': {
+            'class': 'logging.StreamHandler',
+            'stream': 'ext://sys.stdout',
+            'formatter': 'default'
+        }},
+        'root': {
+            'level': 'INFO',
+            'handlers': ['wsgi']
+        }
+    })
 
     app.logger.info('Application {!r} initialized'.format(name))
     return app
