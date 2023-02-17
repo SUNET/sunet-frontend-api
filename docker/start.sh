@@ -38,7 +38,7 @@ pip freeze
 
 runas=''
 if [ "x`id -u`" = "x0" ]; then
-    runas="-c \"${runas_user}:${runas_group}\""
+    runas="-c ${runas_user}:${runas_group}"
 fi
 
 exec start-stop-daemon --start $runas --exec \
