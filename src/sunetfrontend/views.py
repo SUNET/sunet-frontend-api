@@ -91,6 +91,7 @@ def unregister(backend):
 
     # Signal explicit un-registration so that route can be withdrawn
     write_file('unregister', backend, server, remote_ip, port)
+    return jsonify({'success': True})
 
 
 @sunetfrontend_views.route('/ping', methods=['GET', 'POST'])
